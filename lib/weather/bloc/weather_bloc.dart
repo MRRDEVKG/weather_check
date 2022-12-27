@@ -37,7 +37,8 @@ class WeatherBloc extends HydratedBloc<WeatherEvent, WeatherState> {
 
         emit(state.copyWith(status: WeatherStatus.success, weather: weather));
       } on Exception {
-        emit(state);
+        await Future<void>.delayed(const Duration(seconds: 1));
+        emit(state.copyWith(status: WeatherStatus.success));
       }
     });
   }

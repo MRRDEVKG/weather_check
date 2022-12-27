@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:weather_check/weather/models/models.dart';
@@ -56,11 +57,11 @@ class WeatherSuccess extends StatelessWidget {
                                   style: const TextStyle(
                                       color: Colors.white, fontSize: 50),
                                 ),
-                                const Icon(
+                                /*  const Icon(
                                   Icons.circle_outlined,
                                   color: Colors.white,
                                   size: 15,
-                                )
+                                )*/
                               ],
                             ),
                             Row(
@@ -98,15 +99,26 @@ class WeatherSuccess extends StatelessWidget {
                     Positioned(
                       top: 0,
                       left: 0,
-                      child: Image.network(
-                          'https:${weather.currentWeather.conditionImage}',
-                          scale: 0.50,
-                          errorBuilder: (context, object, stackTrace) =>
-                              const Icon(
-                                Icons.image_outlined,
-                                color: Colors.redAccent,
-                                size: 30,
-                              )),
+                      child: SizedBox(
+                        height: 140,
+                        width: 140,
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              'https:${weather.currentWeather.conditionImage}',
+                          fit: BoxFit.fill,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) {
+                            return CircularProgressIndicator(
+                              value: downloadProgress.progress,
+                            );
+                          },
+                          errorWidget: (context, url, error) => const Icon(
+                            Icons.image_outlined,
+                            color: Colors.redAccent,
+                            size: 30,
+                          ),
+                        ),
+                      ),
                     ),
                   ]),
                   // color: Colors.orangeAccent,
@@ -351,31 +363,41 @@ class WeatherSuccess extends StatelessWidget {
                                           'FRI',
                                           'SAT',
                                           'SUN'
-                                        ][DateTime.parse(
-                                                weather.forecastWeatherList[index].date)
+                                        ][DateTime.parse(weather
+                                                .forecastWeatherList[index]
+                                                .date)
                                             .weekday],
                                         style: const TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.w600),
                                       ),
-                                       Text(
-                                        '${DateTime.parse(
-                                            weather.forecastWeatherList[index].date).month}/${DateTime.parse(
-                                            weather.forecastWeatherList[index].date).day}',
+                                      Text(
+                                        '${DateTime.parse(weather.forecastWeatherList[index].date).month}/${DateTime.parse(weather.forecastWeatherList[index].date).day}',
                                         style: const TextStyle(
                                           color: Colors.grey,
                                         ),
                                       ),
-                                      Image.network(
-                                          'https:${weather.forecastWeatherList[index].conditionImage}',
-                                          scale: 1.5,
-                                          errorBuilder:
-                                              (context, object, stackTrace) =>
-                                                  const Icon(
-                                                    Icons.image_outlined,
-                                                    color: Colors.redAccent,
-                                                    size: 30,
-                                                  )),
+                                      SizedBox(
+                                        height: 40,
+                                        width: 40,
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              'https:${weather.forecastWeatherList[index].conditionImage}',
+                                          fit: BoxFit.fill,
+                                          progressIndicatorBuilder:
+                                              (context, url, downloadProgress) {
+                                            return CircularProgressIndicator(
+                                              value: downloadProgress.progress,
+                                            );
+                                          },
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(
+                                            Icons.image_outlined,
+                                            color: Colors.redAccent,
+                                            size: 30,
+                                          ),
+                                        ),
+                                      ),
                                       Text(
                                         '${weather.forecastWeatherList[index].temperature}',
                                         style: const TextStyle(
@@ -448,14 +470,23 @@ class WeatherSuccess extends StatelessWidget {
                       )
                     ],
                     pointers: <GaugePointer>[
-                      NeedlePointer(value: [0, 25, 75, 125, 175, 250, 400][weather.currentWeather.aqi].toDouble())
+                      NeedlePointer(
+                          value: [
+                        0,
+                        25,
+                        75,
+                        125,
+                        175,
+                        250,
+                        400
+                      ][weather.currentWeather.aqi]
+                              .toDouble())
                     ],
                     annotations: const <GaugeAnnotation>[
                       GaugeAnnotation(
                           widget: Text('AQI',
                               style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold)),
+                                  fontSize: 25, fontWeight: FontWeight.bold)),
                           angle: 90,
                           positionFactor: 0.5)
                     ])
