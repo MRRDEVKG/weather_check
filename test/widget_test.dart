@@ -62,7 +62,7 @@ void main() {
         await widgetTester.pumpWidget(MaterialApp(
           home: BlocProvider<WeatherBloc>.value(
             value: weatherBloc,
-            child: WeatherView(),
+            child: const WeatherView(),
           ),
         ));
 
